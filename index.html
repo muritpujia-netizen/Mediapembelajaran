@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Bentang Alam - IPAS Kelas IV</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        .card-gradient {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ffffff;
+        }
+        .step-transition {
+            transition: all 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Bagian Header -->
+    <div class="max-w-4xl mx-auto mb-8 text-center">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-blue-800 mb-2">🏔️ Petualangan Bentang Alam</h1>
+        <p class="text-blue-600 font-medium italic">Mari menjelajahi indahnya bumi kita bersama Gemini AI!</p>
+    </div>
+
+    <!-- Kontainer Utama -->
+    <div id="app" class="max-w-4xl mx-auto card-gradient rounded-3xl shadow-2xl overflow-hidden p-6 md:p-10">
+        
+        <!-- Layar Selamat Datang -->
+        <div id="screen-welcome" class="text-center py-10">
+            <div class="mb-6 flex justify-center">
+                <!-- Avatar Guru (Placeholder) -->
+                <div class="w-32 h-32 bg-yellow-400 rounded-full border-4 border-white shadow-lg flex items-center justify-center overflow-hidden">
+                    <span class="text-4xl">👨‍🏫</span>
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Halo, Penjelajah Cilik!</h2>
+            <p class="text-gray-600 mb-8 px-4">Siapkah kamu belajar tentang berbagai bentuk permukaan bumi kita yang luar biasa?</p>
+            <button onclick="showScreen('screen-learn')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-2xl shadow-lg transition transform hover:scale-105 active:scale-95">
+                Mulai Petualangan!
+            </button>
+        </div>
+
+        <!-- Layar Belajar -->
+        <div id="screen-learn" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-blue-800">Pilih Destinasi 🗺️</h2>
+                <button onclick="showScreen('screen-quiz')" class="bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow hover:bg-orange-600">Lanjut ke Kuis ➔</button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Gunung -->
+                <div onclick="showDetail('gunung')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-md border-b-4 border-red-500 hover:translate-y-[-5px] transition">
+                    <div class="text-4xl mb-2">🌋</div>
+                    <h3 class="font-bold text-lg">Gunung</h3>
+                    <p class="text-sm text-gray-500">Tanah yang menjulang sangat tinggi.</p>
+                </div>
+                <!-- Dataran Tinggi -->
+                <div onclick="showDetail('dataran-tinggi')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-md border-b-4 border-green-500 hover:translate-y-[-5px] transition">
+                    <div class="text-4xl mb-2">☕</div>
+                    <h3 class="font-bold text-lg">Dataran Tinggi</h3>
+                    <p class="text-sm text-gray-500">Dataran luas di ketinggian (di atas 700m).</p>
+                </div>
+                <!-- Dataran Rendah -->
+                <div onclick="showDetail('dataran-rendah')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-md border-b-4 border-yellow-500 hover:translate-y-[-5px] transition">
+                    <div class="text-4xl mb-2">🏙️</div>
+                    <h3 class="font-bold text-lg">Dataran Rendah</h3>
+                    <p class="text-sm text-gray-500">Dataran yang ketinggiannya 0-200m.</p>
+                </div>
+                <!-- Pantai -->
+                <div onclick="showDetail('pantai')" class="cursor-pointer bg-white p-4 rounded-2xl shadow-md border-b-4 border-blue-500 hover:translate-y-[-5px] transition">
+                    <div class="text-4xl mb-2">🏖️</div>
+                    <h3 class="font-bold text-lg">Pantai</h3>
+                    <p class="text-sm text-gray-500">Perbatasan antara daratan dan laut.</p>
+                </div>
+            </div>
+
+            <!-- Kotak Detail Penjelasan -->
+            <div id="detail-box" class="mt-8 p-6 bg-blue-50 rounded-2xl border-2 border-blue-200 hidden">
+                <div id="detail-content"></div>
+                <button onclick="hideDetail()" class="mt-4 text-blue-600 font-bold text-sm">Tutup Penjelasan</button>
+            </div>
+        </div>
+
+        <!-- Layar Kuis -->
+        <div id="screen-quiz" class="hidden text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Uji Nyali Penjelajah! 🧠</h2>
+            <div id="quiz-container" class="bg-white p-6 rounded-2xl shadow-inner text-left mb-6">
+                <p id="quiz-question" class="text-lg font-semibold mb-4 text-gray-700"></p>
+                <div id="quiz-options" class="space-y-3"></div>
+            </div>
+            <div id="quiz-feedback" class="hidden mb-4 p-3 rounded-xl font-bold"></div>
+            <div class="text-sm text-gray-500 mt-2">Skor Kamu: <span id="current-score" class="font-bold text-blue-600">0</span></div>
+        </div>
+
+        <!-- Layar Hasil Akhir -->
+        <div id="screen-result" class="hidden text-center">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Hebat Sekali!</h2>
+            <p class="text-gray-600 mb-6">Kamu telah menyelesaikan petualangan ini.</p>
+            <div class="bg-blue-100 p-6 rounded-2xl mb-8">
+                <span class="block text-sm uppercase font-bold text-blue-500 mb-1">Skor Akhir</span>
+                <span id="final-score" class="text-5xl font-black text-blue-800">0</span>
+            </div>
+            <button onclick="location.reload()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700">Main Lagi</button>
+        </div>
+
+    </div>
+
+    <!-- Kredit Footer -->
+    <div class="max-w-4xl mx-auto mt-8 text-center text-gray-400 text-sm">
+        Dibuat dengan bantuan Gemini AI untuk Gemini Certified Educator Bootcamp
+    </div>
+
+    <script>
+        // Data konten materi
+        const details = {
+            'gunung': {
+                title: 'Gunung 🌋',
+                desc: 'Gunung adalah bagian kerak bumi yang lebih tinggi dari area sekitarnya. Gunung biasanya memiliki lereng yang curam. Jika ada banyak gunung berbaris, disebut pegunungan!',
+                fun: 'Fakta Seru: Gunung tertinggi di Indonesia adalah Puncak Jaya di Papua.'
+            },
+            'dataran-tinggi': {
+                title: 'Dataran Tinggi ☕',
+                desc: 'Wilayah daratan yang luas dan terletak di ketinggian di atas 700 meter dari permukaan laut. Udaranya sejuk dan cocok untuk kebun teh atau kopi.',
+                fun: 'Contoh: Dataran Tinggi Dieng di Jawa Tengah.'
+            },
+            'dataran-rendah': {
+                title: 'Dataran Rendah 🏙️',
+                desc: 'Wilayah dataran yang memiliki ketinggian 0-200 meter di atas permukaan laut. Biasanya digunakan untuk pemukiman penduduk, industri, dan pertanian padi.',
+                fun: 'Ciri khas: Udaranya cenderung lebih panas dibandingkan dataran tinggi.'
+            },
+            'pantai': {
+                title: 'Pantai 🏖️',
+                desc: 'Pantai adalah wilayah perbatasan antara daratan dan laut. Ada pantai yang landai (rata) dan ada pantai yang curam (tebing).',
+                fun: 'Kegiatan: Nelayan mencari ikan, wisata, dan tambak garam.'
+            }
+        };
+
+        // Data kuis
+        const questions = [
+            {
+                q: "Bentang alam yang ketinggiannya lebih dari 700 meter di atas permukaan laut dan udaranya sejuk adalah...",
+                options: ["Pantai", "Dataran Tinggi", "Dataran Rendah", "Lembah"],
+                a: 1
+            },
+            {
+                q: "Bagian permukaan bumi yang menjulang sangat tinggi dan memiliki lereng curam disebut...",
+                options: ["Sungai", "Sawah", "Gunung", "Pantai"],
+                a: 2
+            },
+            {
+                q: "Dimanakah biasanya nelayan mencari ikan dan orang berwisata pasir putih?",
+                options: ["Hutan", "Pantai", "Pasar", "Gunung"],
+                a: 1
+            }
+        ];
+
+        let currentQuizIndex = 0;
+        let score = 0;
+
+        // Fungsi berpindah layar
+        function showScreen(screenId) {
+            document.querySelectorAll('#app > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+            if(screenId === 'screen-quiz') startQuiz();
+        }
+
+        // Fungsi menampilkan detail materi
+        function showDetail(id) {
+            const box = document.getElementById('detail-box');
+            const content = document.getElementById('detail-content');
+            box.classList.remove('hidden');
+            content.innerHTML = `
+                <h4 class="text-xl font-bold text-blue-800 mb-2">${details[id].title}</h4>
+                <p class="text-gray-700 mb-3">${details[id].desc}</p>
+                <div class="bg-white p-3 rounded-lg text-xs italic text-blue-600 border-l-4 border-blue-400">
+                    ${details[id].fun}
+                </div>
+            `;
+        }
+
+        // Fungsi menyembunyikan detail materi
+        function hideDetail() {
+            document.getElementById('detail-box').classList.add('hidden');
+        }
+
+        // Fungsi memulai kuis
+        function startQuiz() {
+            if (currentQuizIndex < questions.length) {
+                const q = questions[currentQuizIndex];
+                document.getElementById('quiz-question').innerText = q.q;
+                const optionsDiv = document.getElementById('quiz-options');
+                optionsDiv.innerHTML = '';
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left p-4 rounded-xl border-2 border-gray-100 hover:border-blue-400 hover:bg-blue-50 transition font-medium";
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(idx);
+                    optionsDiv.appendChild(btn);
+                });
+                document.getElementById('quiz-feedback').classList.add('hidden');
+            } else {
+                showScreen('screen-result');
+                document.getElementById('final-score').innerText = score;
+            }
+        }
+
+        // Fungsi memeriksa jawaban kuis
+        function checkAnswer(idx) {
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+            
+            if (idx === questions[currentQuizIndex].a) {
+                score += 10;
+                feedback.innerText = "✅ Pintar! Jawabanmu Benar.";
+                feedback.className = "mb-4 p-3 rounded-xl font-bold bg-green-100 text-green-700";
+                document.getElementById('current-score').innerText = score;
+            } else {
+                feedback.innerText = "❌ Ups! Kurang Tepat.";
+                feedback.className = "mb-4 p-3 rounded-xl font-bold bg-red-100 text-red-700";
+            }
+
+            // Tunggu sebentar sebelum pindah ke soal berikutnya
+            setTimeout(() => {
+                currentQuizIndex++;
+                startQuiz();
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
